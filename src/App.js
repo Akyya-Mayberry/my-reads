@@ -3,6 +3,9 @@ import * as BooksAPI from './BooksAPI'
 import './App.css'
 import ListBooks from './ListBooks'
 import escapeRegExp from 'escape-string-regexp'
+import { Route } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+
 // import sortBy from 'sort-by'
 
 class BooksApp extends React.Component {
@@ -19,7 +22,6 @@ class BooksApp extends React.Component {
      * users can use the browser's back and forward buttons to navigate between
      * pages, as well as provide a good URL they can bookmark and share.
      */
-    showSearchPage: false,
     books: [],
     query: ''
   }
@@ -27,6 +29,7 @@ class BooksApp extends React.Component {
   componentDidMount() {
     BooksAPI.getAll().then((books) => {
       this.setState({ books })
+      console.log('num of books: ', books.length)
     })
   }
 
@@ -59,11 +62,14 @@ class BooksApp extends React.Component {
 
     return (
       <div className="app">
-        {this.state.showSearchPage ? (
+        
+        
+        <Route exact path='/search' render={() => (
+
           <div className="search-books">
             <div className="search-books-bar">
-              <a className="close-search"
-                onClick={() => this.setState({ showSearchPage: false })}>Close</a>
+              <Link className="close-search"
+                to="/">Close</Link>
               <div className="search-books-input-wrapper">
                 {/*
                   NOTES: The search from BooksAPI is limited to a particular set of search terms.
@@ -80,54 +86,62 @@ class BooksApp extends React.Component {
 
               </div>
             </div>
+
+
+
+
             <div className="search-books-results">
               <ol className="books-grid"></ol>
             </div>
             <ListBooks update={this.changeShelf} books={matchedBooks} />
           </div>
-        ) : (
+        )} />
 
-            <div className="list-books">
 
-              {/* My Reads Header */}
-              <div className="list-books-title">
-                <h1>MyReads</h1>
-              </div>
+        <Route exact path='/' render={() => (
+          <div className="list-books">
 
-              {/* The Shelves */}
+            {/* My Reads Header */}
+            <div className="list-books-title">
+              <h1>MyReads</h1>
+            </div>
 
-              <div className="list-books-content">
-                <div>
+            {/* The Shelves */}
 
-                  {/* TODO: 
+            <div className="list-books-content">
+              <div>
+
+                {/* TODO: 
                     Can shelves be made into loop instead of hardcoded individually?
                   */}
 
-                  {/*Currently Reading*/}
-                  <h2 className="bookshelf-title">Currently Reading</h2>
-                  <ListBooks update={this.changeShelf}
-                    books={this.state.books.filter(b => b.shelf === 'currentlyReading')} />
+                {/*Currently Reading*/}
+                <h2 className="bookshelf-title">Currently Reading</h2>
+                <ListBooks update={this.changeShelf}
+                  books={this.state.books.filter(b => b.shelf === 'currentlyReading')} />
 
-                  {/* Want To Read*/}
-                  <h2 className="bookshelf-title">Want to Read</h2>
-                  <ListBooks update={this.changeShelf}
-                    books={this.state.books.filter(b => b.shelf === 'wantToRead')} />
+                {/* Want To Read*/}
+                <h2 className="bookshelf-title">Want to Read</h2>
+                <ListBooks update={this.changeShelf}
+                  books={this.state.books.filter(b => b.shelf === 'wantToRead')} />
 
-                  {/* Read */}
-                  <h2 className="bookshelf-title">Read</h2>
-                  <ListBooks update={this.changeShelf}
-                    books={this.state.books.filter(b => b.shelf === 'read')} />
+                {/* Read */}
+                <h2 className="bookshelf-title">Read</h2>
+                <ListBooks update={this.changeShelf}
+                  books={this.state.books.filter(b => b.shelf === 'read')} />
 
-                </div>
               </div>
-
-              {/* Search/Add Button */}
-              <div className="open-search">
-                <a onClick={() => this.setState({ showSearchPage: true })}>Add a book</a>
-              </div>
-
             </div>
-          )}
+
+            {/* Search/Add Button */}
+            <div className="open-search">
+              <Link to="/search">Add a book</Link>
+            </div>
+
+          </div>
+        )}/>
+
+
       </div>
     )
   }
