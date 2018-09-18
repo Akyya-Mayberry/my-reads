@@ -8,7 +8,6 @@ class ListBooks extends Component {
     render() {
 
         return (
-
             <div className="bookshelf-books">
                 <ol className="books-grid">
                     {this.props.books.map((b) => (

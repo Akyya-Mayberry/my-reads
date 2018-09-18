@@ -2,6 +2,8 @@ import React from 'react'
 import * as BooksAPI from './BooksAPI'
 import './App.css'
 import ListBooks from './ListBooks'
+import escapeRegExp from 'escape-string-regexp'
+// import sortBy from 'sort-by'
 
 class BooksApp extends React.Component {
   shelves = [
@@ -18,13 +20,18 @@ class BooksApp extends React.Component {
      * pages, as well as provide a good URL they can bookmark and share.
      */
     showSearchPage: false,
-    books: []
+    books: [],
+    query: ''
   }
 
   componentDidMount() {
     BooksAPI.getAll().then((books) => {
       this.setState({ books })
     })
+  }
+
+  updateQuery = (query) => {
+    this.setState({ query: query.trim() })
   }
 
   changeShelf = (book, shelf) => {
@@ -42,12 +49,21 @@ class BooksApp extends React.Component {
   }
 
   render() {
+    let matchedBooks
+    if (this.state.query) {
+      const match = new RegExp(escapeRegExp(this.state.query), 'i')
+      matchedBooks = this.state.books.filter((book) => match.test(book.title))
+    } else {
+      matchedBooks = this.state.books
+    }
+
     return (
       <div className="app">
         {this.state.showSearchPage ? (
           <div className="search-books">
             <div className="search-books-bar">
-              <a className="close-search" onClick={() => this.setState({ showSearchPage: false })}>Close</a>
+              <a className="close-search"
+                onClick={() => this.setState({ showSearchPage: false })}>Close</a>
               <div className="search-books-input-wrapper">
                 {/*
                   NOTES: The search from BooksAPI is limited to a particular set of search terms.
@@ -57,13 +73,17 @@ class BooksApp extends React.Component {
                   However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
                   you don't find a specific author or title. Every search is limited by search terms.
                 */}
-                <input type="text" placeholder="Search by title or author" />
+                <input type="text"
+                  placeholder="Search by title or author"
+                  value={this.state.query}
+                  onChange={(event) => this.updateQuery(event.target.value)} />
 
               </div>
             </div>
             <div className="search-books-results">
               <ol className="books-grid"></ol>
             </div>
+            <ListBooks update={this.changeShelf} books={matchedBooks} />
           </div>
         ) : (
 
@@ -85,15 +105,18 @@ class BooksApp extends React.Component {
 
                   {/*Currently Reading*/}
                   <h2 className="bookshelf-title">Currently Reading</h2>
-                  <ListBooks update={this.changeShelf} books={this.state.books.filter(b => b.shelf === 'currentlyReading')} />
+                  <ListBooks update={this.changeShelf}
+                    books={this.state.books.filter(b => b.shelf === 'currentlyReading')} />
 
                   {/* Want To Read*/}
                   <h2 className="bookshelf-title">Want to Read</h2>
-                  <ListBooks update={this.changeShelf} books={this.state.books.filter(b => b.shelf === 'wantToRead')} />
+                  <ListBooks update={this.changeShelf}
+                    books={this.state.books.filter(b => b.shelf === 'wantToRead')} />
 
                   {/* Read */}
                   <h2 className="bookshelf-title">Read</h2>
-                  <ListBooks update={this.changeShelf} books={this.state.books.filter(b => b.shelf === 'read')} />
+                  <ListBooks update={this.changeShelf}
+                    books={this.state.books.filter(b => b.shelf === 'read')} />
 
                 </div>
               </div>
