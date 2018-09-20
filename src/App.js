@@ -23,6 +23,7 @@ class BooksApp extends React.Component {
      * pages, as well as provide a good URL they can bookmark and share.
      */
     books: [],
+    matched: [],
     query: ''
   }
 
@@ -34,7 +35,23 @@ class BooksApp extends React.Component {
   }
 
   updateQuery = (query) => {
+
     this.setState({ query: query.trim() })
+
+    // Empty strings should return no results
+    if (query.trim().length === 0) { 
+      this.setState({matched: []})
+      return 
+    }
+
+    // If search term includes query string, retrieve matching books
+    BooksAPI.searchTerms.filter(t => {
+      if (t.includes(query.trim())) {
+        BooksAPI.search(query.trim(), 100).then(books => {
+          this.setState({ matched: books })
+        })
+      }
+    })
   }
 
   changeShelf = (book, shelf) => {
@@ -52,18 +69,18 @@ class BooksApp extends React.Component {
   }
 
   render() {
-    let matchedBooks
-    if (this.state.query) {
-      const match = new RegExp(escapeRegExp(this.state.query), 'i')
-      matchedBooks = this.state.books.filter((book) => match.test(book.title))
-    } else {
-      matchedBooks = this.state.books
-    }
+    // let matchedBooks
+    // if (this.state.query) {
+    //   const match = new RegExp(escapeRegExp(this.state.query), 'i')
+    //   matchedBooks = this.state.books.filter((book) => match.test(book.title))
+    // } else {
+    //   matchedBooks = this.state.books
+    // }
 
     return (
       <div className="app">
-        
-        
+
+
         <Route exact path='/search' render={() => (
 
           <div className="search-books">
@@ -93,7 +110,11 @@ class BooksApp extends React.Component {
             <div className="search-books-results">
               <ol className="books-grid"></ol>
             </div>
-            <ListBooks update={this.changeShelf} books={matchedBooks} />
+            {/* {if this.state.matched { */}
+            <ListBooks update={this.changeShelf} books={this.state.matched} />
+            {/* } else {
+              <p>No books matched</p>
+            }} */}
           </div>
         )} />
 
@@ -139,7 +160,7 @@ class BooksApp extends React.Component {
             </div>
 
           </div>
-        )}/>
+        )} />
 
 
       </div>

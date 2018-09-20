@@ -1,7 +1,6 @@
 
 const api = "https://reactnd-books-api.udacity.com"
 
-
 // Generate a unique token for storing your bookshelf data on the backend server.
 let token = localStorage.token
 if (!token)
@@ -11,6 +10,29 @@ const headers = {
   'Accept': 'application/json',
   'Authorization': token
 }
+
+export const searchTerms = ['Android', 'Art', 'Artificial Intelligence',
+  'Astronomy', 'Austen', 'Baseball',
+  'Basketball', 'Bhagat', 'Biography',
+  'Brief', 'Business', 'Camus',
+  'Cervantes', 'Christie', 'Classics',
+  'Comics', 'Cook', 'Cricket',
+  'Cycling', 'Desai', 'Design',
+  'Development', 'Digital Marketing',
+  'Drama', 'Drawing', 'Dumas', 'Education',
+  'Everything', 'Fantasy', 'Film', 'Finance',
+  'First', 'Fitness', 'Football', 'Future',
+  'Games', 'Gandhi', 'Homer', 'Horror', 'Hugo',
+  'Ibsen', 'Journey', 'Kafka', 'King', 'Lahiri',
+  'Larsson', 'Learn', 'Literary Fiction', 'Make',
+  'Manage', 'Marquez', 'Money', 'Mystery', 'Negotiate',
+  'Painting', 'Philosophy', 'Photography', 'Poetry',
+  'Production', 'Programming', 'React', 'Redux',
+  'River', 'Robotics', 'Rowling', 'Satire',
+  'Science Fiction', 'Shakespeare', 'Singh',
+  'Swimming', 'Tale', 'Thrun', 'Time', 'Tolstoy',
+  'Travel', 'Ultimate', 'Virtual Reality',
+  'Web Development', 'iOS']
 
 export const get = (bookId) =>
   fetch(`${api}/books/${bookId}`, { headers })
@@ -42,3 +64,4 @@ export const search = (query, maxResults) =>
     body: JSON.stringify({ query, maxResults })
   }).then(res => res.json())
     .then(data => data.books)
+
