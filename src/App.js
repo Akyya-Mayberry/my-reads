@@ -29,53 +29,46 @@ class BooksApp extends React.Component {
 
   componentDidMount() {
     BooksAPI.getAll().then((books) => {
-      this.setState({ books })
+      this.setState({ books: books })
       console.log('num of books: ', books.length)
     })
   }
 
   updateQuery = (query) => {
 
-    this.setState({ query: query.trim() })
-
+    this.setState({ query: query })
+    console.log('query: ', query)
     // Empty strings should return no results
-    if (query.trim().length === 0) { 
-      this.setState({matched: []})
-      return 
+    if (query.length === 0 || query === "") {
+      this.setState({ matched: [] })
+      return
     }
 
     // If search term includes query string, retrieve matching books
     BooksAPI.searchTerms.filter(t => {
-      if (t.includes(query.trim())) {
-        BooksAPI.search(query.trim(), 100).then(books => {
+      // console.log('search term', t)
+      if (t.toLowerCase().includes(query.toLowerCase())) {
+        BooksAPI.search(query.toLowerCase(), 100).then(books => {
           this.setState({ matched: books })
         })
+      } else {
+        this.setState({ matched: [] })
       }
     })
   }
 
-  changeShelf = (book, shelf) => {
-    BooksAPI.update(book, shelf).then(c => {
-      console.log('success saving book!')
-      this.setState(state => ({
-        books: state.books.map(b => {
-          if (b.id === book.id) {
-            b.shelf = shelf
-          }
-          return b
-        })
-      }))
-    })
+  updateShelves = (book, shelf) => {
+    this.setState(state => ({
+      books: state.books.map(b => {
+        if (b.id === book.id) {
+          b.shelf = shelf
+        }
+        return b
+      })
+    }))
   }
 
   render() {
-    // let matchedBooks
-    // if (this.state.query) {
-    //   const match = new RegExp(escapeRegExp(this.state.query), 'i')
-    //   matchedBooks = this.state.books.filter((book) => match.test(book.title))
-    // } else {
-    //   matchedBooks = this.state.books
-    // }
 
     return (
       <div className="app">
@@ -83,19 +76,12 @@ class BooksApp extends React.Component {
 
         <Route exact path='/search' render={() => (
 
+          // TODO: Move search to a component
           <div className="search-books">
             <div className="search-books-bar">
               <Link className="close-search"
                 to="/">Close</Link>
               <div className="search-books-input-wrapper">
-                {/*
-                  NOTES: The search from BooksAPI is limited to a particular set of search terms.
-                  You can find these search terms here:
-                  https://github.com/udacity/reactnd-project-myreads-starter/blob/master/SEARCH_TERMS.md
-
-                  However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
-                  you don't find a specific author or title. Every search is limited by search terms.
-                */}
                 <input type="text"
                   placeholder="Search by title or author"
                   value={this.state.query}
@@ -104,17 +90,14 @@ class BooksApp extends React.Component {
               </div>
             </div>
 
-
-
-
             <div className="search-books-results">
               <ol className="books-grid"></ol>
             </div>
-            {/* {if this.state.matched { */}
-            <ListBooks update={this.changeShelf} books={this.state.matched} />
-            {/* } else {
-              <p>No books matched</p>
-            }} */}
+
+            <ListBooks
+              updateShelves={this.updateShelves}
+              books={this.state.query === "" ? [] : this.state.matched} />
+
           </div>
         )} />
 
@@ -138,17 +121,17 @@ class BooksApp extends React.Component {
 
                 {/*Currently Reading*/}
                 <h2 className="bookshelf-title">Currently Reading</h2>
-                <ListBooks update={this.changeShelf}
+                <ListBooks updateShelves={this.updateShelves}
                   books={this.state.books.filter(b => b.shelf === 'currentlyReading')} />
 
                 {/* Want To Read*/}
                 <h2 className="bookshelf-title">Want to Read</h2>
-                <ListBooks update={this.changeShelf}
+                <ListBooks updateShelves={this.updateShelves}
                   books={this.state.books.filter(b => b.shelf === 'wantToRead')} />
 
                 {/* Read */}
                 <h2 className="bookshelf-title">Read</h2>
-                <ListBooks update={this.changeShelf}
+                <ListBooks updateShelves={this.updateShelves}
                   books={this.state.books.filter(b => b.shelf === 'read')} />
 
               </div>
