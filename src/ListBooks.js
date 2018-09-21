@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import * as BooksAPI from './BooksAPI'
 
-
+// ComponentWillReceiveProps
 class Book extends Component {
 
     render() {
@@ -44,15 +44,15 @@ class ListBooks extends Component {
     changeShelf = (book, shelf) => {
         BooksAPI.update(book, shelf)
             .then(c => {
-                console.log('success saving book!!!!')
-                this.setState(state => ({
-                    books: this.props.books.map(b => {
-                        if (b.id === book.id) {
-                            b.shelf = shelf
-                        }
-                        return b
-                    })
-                }))
+                // console.log('success saving book!!!!')
+                // this.setState(state => ({
+                //     books: this.props.books.map(b => {
+                //         if (b.id === book.id) {
+                //             b.shelf = shelf
+                //         }
+                //         return b
+                //     })
+                // }))
                 this.props.updateShelves(book, shelf)
             })
     }

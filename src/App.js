@@ -2,6 +2,7 @@ import React from 'react'
 import * as BooksAPI from './BooksAPI'
 import './App.css'
 import ListBooks from './ListBooks'
+import SearchBooks from './SearchBooks'
 import escapeRegExp from 'escape-string-regexp'
 import { Route } from 'react-router-dom'
 import { Link } from 'react-router-dom'
@@ -28,6 +29,7 @@ class BooksApp extends React.Component {
   }
 
   componentDidMount() {
+    this.setState({query: ""})
     BooksAPI.getAll().then((books) => {
       this.setState({ books: books })
       console.log('num of books: ', books.length)
@@ -58,14 +60,12 @@ class BooksApp extends React.Component {
   }
 
   updateShelves = (book, shelf) => {
-    this.setState(state => ({
-      books: state.books.map(b => {
-        if (b.id === book.id) {
-          b.shelf = shelf
-        }
-        return b
-      })
-    }))
+    BooksAPI.getAll().then((books) => {
+      this.setState({ books: books })
+      console.log('num of books: ', books.length)
+    })
+    
+    console.log('Parent updated books!')
   }
 
   render() {
@@ -76,29 +76,10 @@ class BooksApp extends React.Component {
 
         <Route exact path='/search' render={() => (
 
-          // TODO: Move search to a component
-          <div className="search-books">
-            <div className="search-books-bar">
-              <Link className="close-search"
-                to="/">Close</Link>
-              <div className="search-books-input-wrapper">
-                <input type="text"
-                  placeholder="Search by title or author"
-                  value={this.state.query}
-                  onChange={(event) => this.updateQuery(event.target.value)} />
-
-              </div>
-            </div>
-
-            <div className="search-books-results">
-              <ol className="books-grid"></ol>
-            </div>
-
-            <ListBooks
-              updateShelves={this.updateShelves}
-              books={this.state.query === "" ? [] : this.state.matched} />
-
-          </div>
+          <SearchBooks updateQuery={this.updateQuery}
+          matched={this.state.matched} 
+          update={this.updateShelves}
+          query={this.state.query} />
         )} />
 
 
