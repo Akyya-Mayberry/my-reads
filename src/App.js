@@ -71,17 +71,17 @@ class BooksApp extends React.Component {
 
                 {/*Currently Reading*/}
                 <h2 className="bookshelf-title">Currently Reading</h2>
-                <ListBooks updateShelves={this.updateShelves}
+                <ListBooks message="no books to display" updateShelves={this.updateShelves}
                   books={this.state.books.filter(b => b.shelf === 'currentlyReading')} />
 
                 {/* Want To Read*/}
                 <h2 className="bookshelf-title">Want to Read</h2>
-                <ListBooks updateShelves={this.updateShelves}
+                <ListBooks message="no books to display" updateShelves={this.updateShelves}
                   books={this.state.books.filter(b => b.shelf === 'wantToRead')} />
 
                 {/* Read */}
                 <h2 className="bookshelf-title">Read</h2>
-                <ListBooks updateShelves={this.updateShelves}
+                <ListBooks message="no books to display" updateShelves={this.updateShelves}
                   books={this.state.books.filter(b => b.shelf === 'read')} />
 
               </div>

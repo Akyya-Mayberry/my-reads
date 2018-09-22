@@ -13,7 +13,7 @@ class Book extends Component {
         if ('imageLinks' in book) {
             return `url(${book.imageLinks.smallThumbnail})`
         } else {
-            return ""
+            return "../public/noBookImg.jpg"
         }
     }
 
@@ -87,7 +87,7 @@ class ListBooks extends Component {
                                     <Book book={b} update={this.changeShelf} />
                                 </li>)))
                             :
-                            "no books to display"
+                            <p>{this.props.message}</p>
                     }
                 </ol>
             </div>
