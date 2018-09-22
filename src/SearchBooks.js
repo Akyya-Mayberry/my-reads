@@ -97,7 +97,6 @@ class SearchBooks extends Component {
         const found = await BooksAPI.searchTerms.filter(t => {
 
             if (t.toLowerCase().includes(query.toLowerCase())) {
-                console.log("search term that matches: ", t)
 
                 return BooksAPI.search(query.toLowerCase(), 100).then(rsp => {
 
@@ -129,7 +128,7 @@ class SearchBooks extends Component {
                         }, 2000)
                     }
                 })
-            } 
+            }
         })
 
         if (found && found.length < 1) {
