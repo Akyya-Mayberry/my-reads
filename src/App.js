@@ -33,9 +33,12 @@ class BooksApp extends React.Component {
   // Callback for child components to alert 
   // changed self 
   updateShelves = (book, shelf) => {
+    console.log('books changed! update children!')
     BooksAPI.getAll().then((books) => {
       this.setState({ books: books })
     })
+
+    
   }
 
   render() {

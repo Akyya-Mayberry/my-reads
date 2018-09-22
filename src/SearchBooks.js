@@ -8,13 +8,45 @@ import * as BooksAPI from './BooksAPI'
 class SearchBooks extends Component {
     state = {
         matched: [],
-        query: ""
+        query: "",
+        books: []
     }
 
-    // This ensures query is empty when navigating
-    // to the search page - meaning we get fresh search
-    componentWillReceiveProps() {
-        this.setState({ query: "" })
+    getShelves = (matchedBooks, books = []) => {
+        const matchedWithShelves = matchedBooks.map(matchedBook => {
+            let onShelf = []
+
+            if (books.length === 0) {
+                onShelf = this.props.books.filter(shelfedBook => {
+                    return shelfedBook.id === matchedBook.id
+                })
+            } else {
+                onShelf = books.filter(shelfedBook => {
+                    return shelfedBook.id === matchedBook.id
+                })
+            }
+
+            if (onShelf.length > 0) {
+                matchedBook.shelf = onShelf[0].shelf
+                return onShelf[0]
+            } else {
+                matchedBook.shelf = 'none'
+            }
+
+            console.log("matched book")
+            return onShelf[0] || matchedBook
+        })
+
+        return matchedWithShelves
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.books != this.props.books) {
+            const matchedWithShelves = this.getShelves(this.state.matched, nextProps.books)
+            // this.setState({ matched: matchedWithShelves });
+            this.setState({ books: matchedWithShelves });
+
+        }
     }
 
     updateQuery = (query) => {
@@ -31,21 +63,11 @@ class SearchBooks extends Component {
         BooksAPI.searchTerms.filter(t => {
             if (t.toLowerCase().includes(query.toLowerCase())) {
                 BooksAPI.search(query.toLowerCase(), 20).then(books => {
-                    const matchedWithShelves = books.map(matchedBook => {
-                        let onShelf = []
-                        onShelf = this.props.books.filter(shelfedBook => {
-                            return shelfedBook.id === matchedBook.id
-                        })
 
-                        if (onShelf.length > 0 ) {
-                            matchedBook.shelf = onShelf[0].shelf
-                        } else {
-                            matchedBook.shelf = 'none'
-                        }
-                        return matchedBook
-                    })
+                    const matchedWithShelves = this.getShelves(books)
 
-                    this.setState({matched: matchedWithShelves})
+                    // this.setState({ books: matchedWithShelves })
+                    this.setState({ matched: matchedWithShelves })
 
                 })
             } else {

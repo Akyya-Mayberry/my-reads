@@ -5,6 +5,10 @@ import * as BooksAPI from './BooksAPI'
 // ComponentWillReceiveProps
 class Book extends Component {
 
+    state = {
+        book: this.props.book
+    }
+
     getImage(book) {
         if ('imageLinks' in book) {
             return `url(${book.imageLinks.smallThumbnail})`
@@ -13,6 +17,11 @@ class Book extends Component {
         }
     }
 
+    componentWillReceiveProps(props) {
+        this.setState({book: this.props.book})
+    }
+
+
    divStyle = {
         width: 128, 
         height: 193, 
@@ -20,7 +29,7 @@ class Book extends Component {
     }
 
     render() {
-        const b = this.props.book
+        const b = this.state.book
         return (
             <div className="book">
                 <div className="book-top">
@@ -56,18 +65,13 @@ class ListBooks extends Component {
     }
 
     changeShelf = (book, shelf) => {
+        console.log('a book has changed shelfed')
         BooksAPI.update(book, shelf)
-            .then(c => {
-                // console.log('success saving book!!!!')
-                // this.setState(state => ({
-                //     books: this.props.books.map(b => {
-                //         if (b.id === book.id) {
-                //             b.shelf = shelf
-                //         }
-                //         return b
-                //     })
-                // }))
-                this.props.updateShelves(book, shelf)
+        .then(c => {
+            console.log('just updated shelf: ', c)
+            book.shelf = shelf
+            book = c
+                this.props.updateShelves(c, shelf)
             })
     }
 
