@@ -9,15 +9,13 @@ class Book extends Component {
     }
 
     getImage(book) {
-        if ('imageLinks' in book) {
-            return `url(${book.imageLinks.smallThumbnail})`
-        } else {
-            return "url(../public/noBookImg.jpg)"
-        }
+        return 'imageLinks' in book ?
+            `url(${book.imageLinks.smallThumbnail})` :
+            'url(../public/noBookImg.jpg)'
     }
 
     render() {
-        const b = this.props.book
+        const {book} = this.props.book
         return (
             <div className="book">
                 <div className="book-top">
@@ -29,7 +27,7 @@ class Book extends Component {
 
                     {/* Book Shelf Changer */}
                     <div className="book-shelf-changer">
-                        <select value={b.shelf} onChange={(evt) => this.props.update(b, evt.target.value)}>
+                        <select value={book.shelf} onChange={(evt) => this.props.update(book, evt.target.value)}>
                             <option value="move" disabled>Move to...</option>
                             <option value="currentlyReading">Currently Reading</option>
                             <option value="wantToRead">Want to Read</option>
@@ -39,8 +37,8 @@ class Book extends Component {
                     </div>
 
                 </div>
-                <div className="book-title">{b.title}</div>
-                <div className="book-authors">{b.authors}</div>
+                <div className="book-title">{book.title}</div>
+                <div className="book-authors">{book.authors}</div>
             </div>
         )
     }
