@@ -3,11 +3,8 @@ import * as BooksAPI from './BooksAPI'
 import './App.css'
 import ListBooks from './ListBooks'
 import SearchBooks from './SearchBooks'
-import escapeRegExp from 'escape-string-regexp'
 import { Route } from 'react-router-dom'
 import { Link } from 'react-router-dom'
-
-// import sortBy from 'sort-by'
 
 class BooksApp extends React.Component {
   shelves = [
@@ -33,11 +30,9 @@ class BooksApp extends React.Component {
   // Callback for child components to alert 
   // changed self 
   updateShelves = (book, shelf) => {
-    console.log('books changed! update children!')
     BooksAPI.getAll().then((books) => {
       this.setState({ books: books })
     })
-
     
   }
 
@@ -47,10 +42,9 @@ class BooksApp extends React.Component {
       <div className="app">
 
 
-        <Route exact path='/search' render={({ history }) => (
+        <Route exact path='/search' render={() => (
           <SearchBooks books={this.state.books} updateShelves={this.updateShelves} />
         )} />
-
 
         <Route exact path='/' render={() => (
           <div className="list-books">
@@ -94,7 +88,6 @@ class BooksApp extends React.Component {
 
           </div>
         )} />
-
 
       </div>
     )

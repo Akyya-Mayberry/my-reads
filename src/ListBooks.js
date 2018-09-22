@@ -5,8 +5,10 @@ import * as BooksAPI from './BooksAPI'
 // ComponentWillReceiveProps
 class Book extends Component {
 
-    state = {
-        book: this.props.book
+    divStyle = {
+        width: 128,
+        height: 193,
+        backgroundImage: this.getImage(this.props.book)
     }
 
     getImage(book) {
@@ -17,19 +19,8 @@ class Book extends Component {
         }
     }
 
-    componentWillReceiveProps(nextProps) {
-        this.setState({ book: this.props.book })
-    }
-
-
-    divStyle = {
-        width: 128,
-        height: 193,
-        backgroundImage: this.getImage(this.props.book)
-    }
-
     render() {
-        const b = this.state.book
+        const b = this.props.book
         return (
             <div className="book">
                 <div className="book-top">
@@ -64,7 +55,6 @@ class ListBooks extends Component {
     static propTypes = {
         books: PropTypes.array.isRequired,
     }
-
 
     changeShelf = (book, shelf) => {
         console.log('a book has changed shelfed')

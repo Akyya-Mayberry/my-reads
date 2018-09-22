@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import ListBooks from './ListBooks'
 import { Link } from 'react-router-dom'
 import * as BooksAPI from './BooksAPI'
@@ -61,7 +60,6 @@ class SearchBooks extends Component {
         }
     }
 
-
     componentWillUpdate(nextProps, nextState) {
         if (nextProps.books !== this.props.books) {
             const matchedWithShelves = this.getShelves(this.state.matched, nextProps.books)
@@ -90,7 +88,7 @@ class SearchBooks extends Component {
         // Start the search
         this.setState(
             {
-                querying: true,
+                querying: true
             },
             this.updateMessage
         )
@@ -131,10 +129,9 @@ class SearchBooks extends Component {
                         }, 2000)
                     }
                 })
-            }
+            } 
         })
 
-        await found
         if (found && found.length < 1) {
             this.setState(
                 {
@@ -168,7 +165,7 @@ class SearchBooks extends Component {
                 <ListBooks
                     message={this.state.message}
                     updateShelves={this.props.updateShelves}
-                    books={this.state.query === "" || !this.state.querying ? [] : this.state.matched} />
+                    books={this.state.query === "" ? [] : this.state.matched} />
             </div>
         )
     }
