@@ -11,12 +11,6 @@ class SearchBooks extends Component {
         query: ""
     }
 
-    updateShelf() {
-        BooksAPI.get(this.props.book.id).then(b => {
-            this.setState({ book: b })
-        })
-    }
-
     // This ensures query is empty when navigating
     // to the search page - meaning we get fresh search
     componentWillReceiveProps() {
@@ -36,14 +30,23 @@ class SearchBooks extends Component {
         // If search term includes query string, retrieve matching books
         BooksAPI.searchTerms.filter(t => {
             if (t.toLowerCase().includes(query.toLowerCase())) {
-                BooksAPI.search(query.toLowerCase(), 100).then(books => {
+                BooksAPI.search(query.toLowerCase(), 20).then(books => {
+                    const matchedWithShelves = books.map(matchedBook => {
+                        let onShelf = []
+                        onShelf = this.props.books.filter(shelfedBook => {
+                            return shelfedBook.id === matchedBook.id
+                        })
 
-                    /* HELP: Here is where I update search results
-                    however the search endpoint doesn't return
-                    book objects with shelf property. So
-                    how am I to include the shelf property here?
-                    */
-                    this.setState({ matched: books })
+                        if (onShelf.length > 0 ) {
+                            matchedBook.shelf = onShelf[0].shelf
+                        } else {
+                            matchedBook.shelf = 'none'
+                        }
+                        return matchedBook
+                    })
+
+                    this.setState({matched: matchedWithShelves})
+
                 })
             } else {
                 this.setState({ matched: [] })

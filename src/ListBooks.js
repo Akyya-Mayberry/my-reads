@@ -4,17 +4,6 @@ import * as BooksAPI from './BooksAPI'
 
 // ComponentWillReceiveProps
 class Book extends Component {
-    // state = {
-    //     book: this.props.book
-    // }
-
-    // componentDidMount() {
-    //     // getBook = (book) => {
-    //         BooksAPI.get(this.props.book.id).then(b => {
-    //             this.setState({book: b})
-    //         })
-    //     // }
-    // }
 
     getImage(book) {
         if ('imageLinks' in book) {
@@ -65,8 +54,6 @@ class ListBooks extends Component {
     static propTypes = {
         books: PropTypes.array.isRequired,
     }
-
-
 
     changeShelf = (book, shelf) => {
         BooksAPI.update(book, shelf)
