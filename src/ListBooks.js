@@ -17,14 +17,14 @@ class Book extends Component {
         }
     }
 
-    componentWillReceiveProps(props) {
-        this.setState({book: this.props.book})
+    componentWillReceiveProps(nextProps) {
+        this.setState({ book: this.props.book })
     }
 
 
-   divStyle = {
-        width: 128, 
-        height: 193, 
+    divStyle = {
+        width: 128,
+        height: 193,
         backgroundImage: this.getImage(this.props.book)
     }
 
@@ -60,17 +60,19 @@ class Book extends Component {
 
 
 class ListBooks extends Component {
+
     static propTypes = {
         books: PropTypes.array.isRequired,
     }
 
+
     changeShelf = (book, shelf) => {
         console.log('a book has changed shelfed')
         BooksAPI.update(book, shelf)
-        .then(c => {
-            console.log('just updated shelf: ', c)
-            book.shelf = shelf
-            book = c
+            .then(c => {
+                console.log('just updated shelf: ', c)
+                book.shelf = shelf
+                book = c
                 this.props.updateShelves(c, shelf)
             })
     }
