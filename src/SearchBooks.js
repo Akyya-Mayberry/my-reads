@@ -14,6 +14,7 @@ class SearchBooks extends Component {
         books: [],
     }
 
+    timer = null
     getShelves = (matchedBooks = [], books = []) => {
         if (matchedBooks.length === 0) {
             return
@@ -69,7 +70,9 @@ class SearchBooks extends Component {
         }
     }
 
-    updateQuery = (query) => {
+    updateQuery = async function (query) {
+        if (this.timer) { clearTimeout(this.timer) }
+
         this.setState({ query: query })
 
         // Empty strings should return no results
@@ -78,8 +81,6 @@ class SearchBooks extends Component {
                 {
                     matched: [],
                     querying: false,
-                    message: "Enter a search term",
-                    query: ""
                 },
                 this.updateMessage
             )
@@ -90,47 +91,60 @@ class SearchBooks extends Component {
         this.setState(
             {
                 querying: true,
-                message: ""
             },
             this.updateMessage
         )
 
         // If search term includes query string, retrieve matching books
-        BooksAPI.searchTerms.filter(t => {
+        const found = await BooksAPI.searchTerms.filter(t => {
 
             if (t.toLowerCase().includes(query.toLowerCase())) {
+                console.log("search term that matches: ", t)
 
-                BooksAPI.search(query.toLowerCase(), 20).then(rsp => {
+                return BooksAPI.search(query.toLowerCase(), 100).then(rsp => {
 
                     // Search term not found
                     if (rsp.hasOwnProperty('error')) {
-                        setTimeout(() => {
+                        this.timer = setTimeout(() => {
                             this.setState(
                                 {
                                     matched: [],
                                     querying: false,
-                                    message: "Invalid Search Term",
                                 },
                                 this.updateMessage
                             )
                         }, 2000)
+                        return false
                     } else {
                         const matchedWithShelves = this.getShelves(rsp)
 
-                        setTimeout(() => {
+                        this.timer = setTimeout(() => {
                             this.setState(
                                 {
                                     matched: matchedWithShelves,
                                     querying: true,
-                                    message: ""
                                 },
                                 this.updateMessage
                             )
-                        }, 3000)
+                            return true
+
+                        }, 2000)
                     }
                 })
             }
         })
+
+        await found
+        if (found && found.length < 1) {
+            this.setState(
+                {
+                    matched: [],
+                    querying: false
+                },
+                this.updateMessage
+            )
+        }
+
     }
 
     render() {
@@ -154,7 +168,7 @@ class SearchBooks extends Component {
                 <ListBooks
                     message={this.state.message}
                     updateShelves={this.props.updateShelves}
-                    books={this.state.query === "" ? [] : this.state.matched} />
+                    books={this.state.query === "" || !this.state.querying ? [] : this.state.matched} />
             </div>
         )
     }
