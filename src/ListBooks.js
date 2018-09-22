@@ -4,15 +4,40 @@ import * as BooksAPI from './BooksAPI'
 
 // ComponentWillReceiveProps
 class Book extends Component {
+    // state = {
+    //     book: this.props.book
+    // }
+
+    // componentDidMount() {
+    //     // getBook = (book) => {
+    //         BooksAPI.get(this.props.book.id).then(b => {
+    //             this.setState({book: b})
+    //         })
+    //     // }
+    // }
+
+    getImage(book) {
+        if ('imageLinks' in book) {
+            return `url(${book.imageLinks.smallThumbnail})`
+        } else {
+            return ""
+        }
+    }
+
+   divStyle = {
+        width: 128, 
+        height: 193, 
+        backgroundImage: this.getImage(this.props.book)
+    }
 
     render() {
-        const b = this.props.b
+        const b = this.props.book
         return (
             <div className="book">
                 <div className="book-top">
 
                     {/* Book Cover */}
-                    <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${b.imageLinks.smallThumbnail})` }}></div>
+                    <div className="book-cover" style={this.divStyle}></div>
 
                     {/* TODO: Consider moving book shelf changer to component. */}
 
@@ -41,6 +66,8 @@ class ListBooks extends Component {
         books: PropTypes.array.isRequired,
     }
 
+
+
     changeShelf = (book, shelf) => {
         BooksAPI.update(book, shelf)
             .then(c => {
@@ -66,7 +93,7 @@ class ListBooks extends Component {
                         this.props.books.length > 0 ?
                             (this.props.books.map((b) => (
                                 <li key={b.id}>
-                                    <Book b={b} update={this.changeShelf} />
+                                    <Book book={b} update={this.changeShelf} />
                                 </li>)))
                             :
                             "no books to display"

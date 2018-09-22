@@ -17,55 +17,25 @@ class BooksApp extends React.Component {
   ]
 
   state = {
-    /**
-     * TODO: Instead of using this state variable to keep track of which page
-     * we're on, use the URL in the browser's address bar. This will ensure that
-     * users can use the browser's back and forward buttons to navigate between
-     * pages, as well as provide a good URL they can bookmark and share.
-     */
     books: [],
-    matched: [],
     query: ''
   }
 
   componentDidMount() {
-    this.setState({query: ""})
+    this.setState({ query: "" })
     BooksAPI.getAll().then((books) => {
       this.setState({ books: books })
-      console.log('num of books: ', books.length)
     })
   }
 
-  updateQuery = (query) => {
+  
 
-    this.setState({ query: query })
-    console.log('query: ', query)
-    // Empty strings should return no results
-    if (query.length === 0 || query === "") {
-      this.setState({ matched: [] })
-      return
-    }
-
-    // If search term includes query string, retrieve matching books
-    BooksAPI.searchTerms.filter(t => {
-      // console.log('search term', t)
-      if (t.toLowerCase().includes(query.toLowerCase())) {
-        BooksAPI.search(query.toLowerCase(), 100).then(books => {
-          this.setState({ matched: books })
-        })
-      } else {
-        this.setState({ matched: [] })
-      }
-    })
-  }
-
+  // Callback for child components to alert 
+  // changed self 
   updateShelves = (book, shelf) => {
     BooksAPI.getAll().then((books) => {
       this.setState({ books: books })
-      console.log('num of books: ', books.length)
     })
-    
-    console.log('Parent updated books!')
   }
 
   render() {
@@ -74,12 +44,8 @@ class BooksApp extends React.Component {
       <div className="app">
 
 
-        <Route exact path='/search' render={() => (
-
-          <SearchBooks updateQuery={this.updateQuery}
-          matched={this.state.matched} 
-          update={this.updateShelves}
-          query={this.state.query} />
+        <Route exact path='/search' render={({ history }) => (
+          <SearchBooks books={this.state.books} updateShelves={this.updateShelves} />
         )} />
 
 
@@ -92,12 +58,12 @@ class BooksApp extends React.Component {
             </div>
 
             {/* The Shelves */}
-
+          
             <div className="list-books-content">
               <div>
 
                 {/* TODO: 
-                    Can shelves be made into loop instead of hardcoded individually?
+                    Can shelves be made into a seperate component
                   */}
 
                 {/*Currently Reading*/}
