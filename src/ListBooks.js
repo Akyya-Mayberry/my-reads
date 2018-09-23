@@ -7,14 +7,18 @@ class ListBooks extends Component {
 
     static propTypes = {
         books: PropTypes.array.isRequired,
+        message: PropTypes.string.isRequired,
+        updateShelves: PropTypes.func.isRequired
     }
 
+    /**
+     * Change book's shelf and alert parent component
+     */
     changeShelf = (book, shelf) => {
         BooksAPI.update(book, shelf)
-            .then(c => {
+            .then(bookUpdated => {
                 book.shelf = shelf
-                book = c
-                this.props.updateShelves(c, shelf)
+                this.props.updateShelves(bookUpdated, shelf)
             })
     }
 
