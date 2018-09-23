@@ -1,46 +1,41 @@
 import React from 'react'
 import * as BooksAPI from './BooksAPI'
 import './App.css'
-import ListBooks from './ListBooks'
+import Shelf from './Shelf'
 import SearchBooks from './SearchBooks'
 import { Route } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 
 class BooksApp extends React.Component {
-  shelves = [
-    'Currently Reading',
-    'Want to Read',
-    'Read'
-  ]
 
   state = {
     books: [],
     query: ''
   }
 
+  shelves = {
+    currentlyReading: 'Currently Reading',
+    wantToRead: 'Want To Read',
+    read: 'Read'
+  }
+
   componentDidMount() {
-    this.setState({ query: "" })
     BooksAPI.getAll().then((books) => {
       this.setState({ books: books })
     })
   }
 
-  
-
-  // Callback for child components to alert 
-  // changed self 
+  // Callback for child components to alert shelf changed 
   updateShelves = (book, shelf) => {
     BooksAPI.getAll().then((books) => {
       this.setState({ books: books })
     })
-    
   }
 
   render() {
 
     return (
       <div className="app">
-
 
         <Route exact path='/search' render={() => (
           <SearchBooks books={this.state.books} updateShelves={this.updateShelves} />
@@ -55,29 +50,18 @@ class BooksApp extends React.Component {
             </div>
 
             {/* The Shelves */}
-          
             <div className="list-books-content">
               <div>
-
-                {/* TODO: 
-                    Can shelves be made into a seperate component
-                  */}
-
-                {/*Currently Reading*/}
-                <h2 className="bookshelf-title">Currently Reading</h2>
-                <ListBooks message="no books to display" updateShelves={this.updateShelves}
-                  books={this.state.books.filter(b => b.shelf === 'currentlyReading')} />
-
-                {/* Want To Read*/}
-                <h2 className="bookshelf-title">Want to Read</h2>
-                <ListBooks message="no books to display" updateShelves={this.updateShelves}
-                  books={this.state.books.filter(b => b.shelf === 'wantToRead')} />
-
-                {/* Read */}
-                <h2 className="bookshelf-title">Read</h2>
-                <ListBooks message="no books to display" updateShelves={this.updateShelves}
-                  books={this.state.books.filter(b => b.shelf === 'read')} />
-
+                {
+                  Object.entries(this.shelves).map(([key, val]) => {
+                    return <Shelf
+                      key={key}
+                      name={val}
+                      books={this.state.books.filter(b => b.shelf === key)}
+                      updateShelves={this.updateShelves}
+                    />
+                  })
+                }
               </div>
             </div>
 
