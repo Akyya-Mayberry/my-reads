@@ -1,47 +1,54 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 class Book extends Component {
+    static propTypes = {
+        book: PropTypes.object.isRequired,
+        update: PropTypes.func.isRequired
+    }
+
+    getImage = (book) => {
+        return 'imageLinks' in book
+            ? `url(${book.imageLinks.smallThumbnail})`
+            : 'url(../public/noBookImg.jpg)';
+    }
 
     divStyle = {
-        width: 128,
+        backgroundImage: this.getImage(this.props.book),
         height: 193,
-        backgroundImage: this.getImage(this.props.book)
+        width: 128
     }
 
-    getImage(book) {
-        return 'imageLinks' in book ?
-            `url(${book.imageLinks.smallThumbnail})` :
-            'url(../public/noBookImg.jpg)'
-    }
 
     render() {
-        const book = this.props.book
+        const {book, update} = this.props;
+
         return (
-            <div className="book">
-                <div className="book-top">
+            <div className='book'>
+                <div className='book-top'>
 
                     {/* Book Cover */}
-                    <div className="book-cover" style={this.divStyle}></div>
+                    <div className='book-cover' style={this.divStyle}></div>
 
-                    {/* TODO: Consider moving book shelf changer to component. */}
+                    {/* Consider moving book shelf changer to component. */}
 
                     {/* Book Shelf Changer */}
-                    <div className="book-shelf-changer">
-                        <select value={book.shelf} onChange={(evt) => this.props.update(book, evt.target.value)}>
-                            <option value="move" disabled>Move to...</option>
-                            <option value="currentlyReading">Currently Reading</option>
-                            <option value="wantToRead">Want to Read</option>
-                            <option value="read">Read</option>
-                            <option value="none">None</option>
+                    <div className='book-shelf-changer'>
+                        <select value={book.shelf} onChange={(evt) => update(book, evt.target.value)}>
+                            <option value='move' disabled>Move to...</option>
+                            <option value='currentlyReading'>Currently Reading</option>
+                            <option value='wantToRead'>Want to Read</option>
+                            <option value='read'>Read</option>
+                            <option value='none'>None</option>
                         </select>
                     </div>
 
                 </div>
-                <div className="book-title">{book.title}</div>
-                <div className="book-authors">{book.authors}</div>
+                <div className='book-title'>{book.title}</div>
+                <div className='book-authors'>{book.authors}</div>
             </div>
-        )
+        );
     }
 }
 
-export default Book
+export default Book;
