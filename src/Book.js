@@ -33,7 +33,10 @@ class Book extends Component {
                     {/* Book Cover */}
                     <div className='book-cover' style={this.divStyle}></div>
 
-                    {/* Consider moving book shelf changer to component. */}
+                    {/*
+                        Consider moving book shelf changer to component,
+                        but not really necessary.
+                    */}
 
                     {/* Book Shelf Changer */}
                     <div className='book-shelf-changer'>
