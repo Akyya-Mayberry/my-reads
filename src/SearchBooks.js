@@ -83,6 +83,13 @@ class SearchBooks extends Component {
         }
     }
 
+    /**
+     * If props change such as books,
+     * this updates the matched books so they have 
+     * current shelf property
+     * @param {Updated props coming from parent} nextProps 
+     * @param {Updated state} nextState 
+     */
     componentWillUpdate(nextProps, nextState) {
         if (nextProps.books !== this.props.books) {
             const matchedWithShelves = this.shelfBooks(
