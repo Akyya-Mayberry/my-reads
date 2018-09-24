@@ -10,18 +10,21 @@ class Book extends Component {
     getImage = (book) => {
         return 'imageLinks' in book
             ? `url(${book.imageLinks.smallThumbnail})`
-            : 'url(../public/noBookImg.jpg)';
+            : `url('noBookImg.jpg')`;
     }
 
     divStyle = {
         backgroundImage: this.getImage(this.props.book),
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'cover',
         height: 193,
         width: 128
     }
 
 
     render() {
-        const {book, update} = this.props;
+        const { book, update } = this.props;
 
         return (
             <div className='book'>
@@ -34,9 +37,13 @@ class Book extends Component {
 
                     {/* Book Shelf Changer */}
                     <div className='book-shelf-changer'>
-                        <select value={book.shelf} onChange={(evt) => update(book, evt.target.value)}>
+                        <select
+                            value={book.shelf}
+                            onChange={(evt) => update(book, evt.target.value)}>
                             <option value='move' disabled>Move to...</option>
-                            <option value='currentlyReading'>Currently Reading</option>
+                            <option value='currentlyReading'>
+                                Currently Reading
+                            </option>
                             <option value='wantToRead'>Want to Read</option>
                             <option value='read'>Read</option>
                             <option value='none'>None</option>

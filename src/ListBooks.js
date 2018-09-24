@@ -18,11 +18,10 @@ class ListBooks extends Component {
      * @return {null} - implicit null
      */
     changeShelf = (book, shelf) => {
-        BooksAPI.update(book, shelf).
-            then(() => {
-                book.shelf = shelf;
-                this.props.updateShelves();
-            });
+        BooksAPI.update(book, shelf).then(() => {
+            book.shelf = shelf;
+            this.props.updateShelves();
+        });
     }
 
     render() {
@@ -34,7 +33,9 @@ class ListBooks extends Component {
                         this.props.books.length > 0
                             ? this.props.books.map((book) =>
                                 <li key={book.id}>
-                                    <Book book={book} update={this.changeShelf} />
+                                    <Book
+                                        book={book}
+                                        update={this.changeShelf} />
                                 </li>)
                             : <p>{this.props.message}</p>
                     }

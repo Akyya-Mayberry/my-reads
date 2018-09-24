@@ -16,11 +16,11 @@ class BooksApp extends React.Component {
 
         // These require being in proper order
         // move to an array of tuples for instance
-        this.shelves = {
-            currentlyReading: 'Currently Reading',
-            read: 'Read',
-            wantToRead: 'Want To Read'
-        };
+        this.shelves = [
+            { currentlyReading: 'Currently Reading' },
+            { wantToRead: 'Want To Read' },
+            { read: 'Read' }
+        ];
 
         this.updateShelves = this.updateShelves.bind(this);
     }
@@ -65,17 +65,20 @@ class BooksApp extends React.Component {
                         <div className='list-books-content'>
                             <div>
                                 {
-                                    Object.entries(this.shelves).map(([
-                                        key,
-                                        val
-                                    ]) =>
-                                        <Shelf
-                                            key={key}
-                                            name={val}
-                                            books={this.state.books.filter((book) =>
-                                                book.shelf === key)}
-                                            updateShelves={this.updateShelves}
-                                        />)
+                                    this.shelves.map((shelf) => {
+
+                                        return Object.entries(shelf).map(([
+                                            key,
+                                            val
+                                        ]) =>
+                                            <Shelf
+                                                key={key}
+                                                name={val}
+                                                books={this.state.books.filter((book) =>
+                                                    book.shelf === key)}
+                                                updateShelves={this.updateShelves}
+                                            />);
+                                    })
                                 }
                             </div>
                         </div>
